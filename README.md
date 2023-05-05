@@ -1,34 +1,44 @@
 
 # Rapport
-
-**Skriv din rapport här!**
-
-_Du kan ta bort all text som finns sedan tidigare_.
-
-## Följande grundsyn gäller dugga-svar:
-
-- Ett kortfattat svar är att föredra. Svar som är längre än en sida text (skärmdumpar och programkod exkluderat) är onödigt långt.
-- Svaret skall ha minst en snutt programkod.
-- Svaret skall inkludera en kort övergripande förklarande text som redogör för vad respektive snutt programkod gör eller som svarar på annan teorifråga.
-- Svaret skall ha minst en skärmdump. Skärmdumpar skall illustrera exekvering av relevant programkod. Eventuell text i skärmdumpar måste vara läsbar.
-- I de fall detta efterfrågas, dela upp delar av ditt svar i för- och nackdelar. Dina för- respektive nackdelar skall vara i form av punktlistor med kortare stycken (3-4 meningar).
-
-Programkod ska se ut som exemplet nedan. Koden måste vara korrekt indenterad då den blir lättare att läsa vilket gör det lättare att hitta syntaktiska fel.
-
+Innan jag skapade själva preferencen så byggde jag skelettet för applikationen, alltså SecondActivityn, knappar för att spara och gå fram och tillbaka mm.
+Dessa listeners sattes på knapparna i varsin activity
 ```
-function errorCallback(error) {
-    switch(error.code) {
-        case error.PERMISSION_DENIED:
-            // Geolocation API stöds inte, gör något
-            break;
-        case error.POSITION_UNAVAILABLE:
-            // Misslyckat positionsanrop, gör något
-            break;
-        case error.UNKNOWN_ERROR:
-            // Okänt fel, gör något
-            break;
-    }
+Button button = (Button) findViewById(R.id.buttonChangeScreen);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+                startActivity(intent);
+            }
+        });
+        
+        
+Button backButton = (Button) findViewById(R.id.buttonBack);        
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SecondActivity.this, MainActivity.class);
+                startActivity(intent);
+            }
+        });
+```
+Efter detta skapade jag en metod som hämtar och sparar den ifyllda datan till Shared Preferences. Denna metod kallas i onClick listenern för "Save" knappen.
+```
+public void saveData(){
+    SharedPreferences sharedPreferences = getSharedPreferences(shared_Preferences, MODE_PRIVATE);
+    SharedPreferences.Editor editor = sharedPreferences.edit();
+    editor.putString(shared_Preferences, editText.getText().toString()).apply();
 }
+```
+Därefter har jag även skapat en metod i onResume som hämtar datan från shared preferences och visar den i TextViewn.
+```
+@Override
+    public void onResume() {
+        super.onResume();
+        SharedPreferences sharedPreferences = getSharedPreferences(SecondActivity.shared_Preferences, MODE_PRIVATE);
+        String textFromEditView = sharedPreferences.getString(SecondActivity.shared_Preferences, "");
+        textView.setText(textFromEditView);
+    }
 ```
 ![](Preferences1.png)
 ![](Preferences2.png)
